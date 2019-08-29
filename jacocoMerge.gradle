@@ -1,0 +1,17 @@
+apply plugin: 'jacoco'
+
+task jacocoMerge(type: JacocoMerge) {
+    group "Reporting"
+    description "Merges Jacoco coverage reports."
+
+    def allTestCoverageFile = "$rootProject.buildDir/jacoco/allTestCoverage.exec"
+    destinationFile = file(allTestCoverageFile)
+
+    def execution = []
+
+    rootProject.subprojects.each { project ->
+        execution << file("$project.buildDir/jacoco/testDebugUnitTest.exec")
+    }
+
+    executionData = files(execution)
+}
