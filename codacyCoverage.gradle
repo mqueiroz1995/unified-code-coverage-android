@@ -9,7 +9,7 @@ dependencies {
     codacy 'com.github.codacy:codacy-coverage-reporter:-SNAPSHOT'
 }
 
-task sendCoverageToCodacy(dependsOn: jacocoMerge) {
+task sendCoverageToCodacy {
     group "Reporting"
     description "Sends Jacoco coverage reports to Codacy."
 
