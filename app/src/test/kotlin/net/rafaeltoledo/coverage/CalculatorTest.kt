@@ -10,4 +10,9 @@ class CalculatorTest {
     fun checkIfSumIsCorrect() {
         assertThat(KotlinClass().sum(1, 1), `is`(2))
     }
+
+    @Test
+    fun checkIfSubIsCorrect() {
+        assertThat(KotlinClass().sub(1, 1), `is`(0))
+    }
 }
