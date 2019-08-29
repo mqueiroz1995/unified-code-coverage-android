@@ -8,7 +8,7 @@ tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
 }
 
-task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest'/*, 'createDebugCoverageReport'*/]) {
 
     group "Reporting"
     description "Generate Jacoco coverage reports."
@@ -16,36 +16,19 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
     reports {
         xml.enabled = true
         html.enabled = true
-        html.destination file("${rootProject.buildDir}/coverage-report")
     }
-
-    def javaClasses = []
-    def kotlinClasses = []
-    def javaSrc = []
-    def kotlinSrc = []
-    def execution = []
 
     def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
 
-    rootProject.subprojects.each { proj ->
-        javaClasses   << fileTree(dir: "$proj.buildDir/intermediates/javac/debug", excludes: fileFilter)
-        kotlinClasses << fileTree(dir: "$proj.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
-        javaSrc       << "$proj.projectDir/src/main/java"
-        kotlinSrc     << "$proj.projectDir/src/main/kotlin"
-        execution     << fileTree(dir: proj.buildDir,
-                includes: ['jacoco/testDebugUnitTest.exec',
-                           'outputs/code_coverage/debugAndroidTest/connected/**/*.ec'])
-    }
+    def javaClasses = fileTree(dir: "$project.buildDir/intermediates/javac/debug", excludes: fileFilter)
+    def kotlinClasses = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
+    def javaSrc = "$project.projectDir/src/main/java"
+    def kotlinSrc = "$project.projectDir/src/main/kotlin"
+    def execution = fileTree(dir: project.buildDir,
+            includes: ['jacoco/testDebugUnitTest.exec',
+                       'outputs/code_coverage/debugAndroidTest/connected/**/*.ec'])
 
     sourceDirectories = files([javaSrc, kotlinSrc])
     classDirectories = files([javaClasses, kotlinClasses])
-
-    print execution
-
     executionData = files(execution)
-
-    doLast() {
-        print "file://${reports.html.destination}/index.html"
-    }
 }
-
