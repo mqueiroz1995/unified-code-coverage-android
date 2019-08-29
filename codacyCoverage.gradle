@@ -1,0 +1,45 @@
+configurations { codacy }
+
+repositories {
+    maven { url "https://jitpack.io" }
+    maven { url "http://dl.bintray.com/typesafe/maven-releases" }
+}
+
+dependencies {
+    codacy 'com.github.codacy:codacy-coverage-reporter:-SNAPSHOT'
+}
+
+task sendCoverageToCodacy(dependsOn: jacocoMerge) {
+    group "Reporting"
+    description "Sends Jacoco coverage reports to Codacy."
+
+    doLast {
+        def codacyMain = "com.codacy.CodacyCoverageReporter"
+        def codacyClasspath = configurations.codacy
+
+        rootProject.subprojects { subproject ->
+            subproject.javaexec {
+                main = codacyMain
+                classpath = codacyClasspath
+                args = [
+                        "report",
+                        "-l",
+                        "Java",
+                        "-l",
+                        "Kotlin",
+                        "-r",
+                        "${subproject.buildDir}/reports/jacoco/jacocoTestReport/jacocoTestReport.xml",
+                        "--partial"
+                ]
+            }
+        }
+
+        rootProject.javaexec {
+            main = codacyMain
+            classpath = codacyClasspath
+            args = [
+                    "final",
+            ]
+        }
+    }
+}

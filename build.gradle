@@ -7,7 +7,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0-rc02'
+        classpath 'com.android.tools.build:gradle:3.4.1'
         classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
@@ -25,3 +25,4 @@ task clean(type: Delete) {
 }
 
 apply from: rootProject.file("jacocoMerge.gradle")
+apply from: rootProject.file("codacyCoverage.gradle")
