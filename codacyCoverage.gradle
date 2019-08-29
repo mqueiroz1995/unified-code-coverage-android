@@ -25,6 +25,17 @@ task sendCoverageToCodacy(dependsOn: jacocoMerge) {
                         "report",
                         "-l",
                         "Java",
+                        "-r",
+                        "${subproject.buildDir}/reports/jacoco/jacocoTestReport/jacocoTestReport.xml",
+                        "--partial"
+                ]
+            }
+
+            subproject.javaexec {
+                main = codacyMain
+                classpath = codacyClasspath
+                args = [
+                        "report",
                         "-l",
                         "Kotlin",
                         "-r",
